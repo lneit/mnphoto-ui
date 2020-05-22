@@ -1,0 +1,14 @@
+.Image {
+    display: block;
+    width: 250px;
+    margin: 16px auto;
+    padding: 16px;
+    text-align: center;
+    overflow: hidden;
+}
+
+@media (min-width: 500px) {
+    .Image {
+        width: 450px;
+    }
+}

@@ -1,0 +1,27 @@
+.SiteInfo {
+    margin: 0;
+    padding: 5px 10px;
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+
+.SiteInfo span {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.SiteInfo a {
+    color: #3D3D3D;
+    text-decoration: none;
+    width: 80%;
+    box-sizing: border-box;
+    display: block;
+    text-align: left;
+}
+
+@media (min-width: 500px) {
+    .SiteInfo {
+        flex-flow: row;
+    }
+}
