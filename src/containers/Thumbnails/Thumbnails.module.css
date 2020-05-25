@@ -1,3 +1,11 @@
+.Thumbnails {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    width: 80%;
+    margin: auto;
+}
+
 .Thumbnail {
     width: 150px;
     margin: 16px auto;
@@ -6,9 +14,3 @@
     padding: 16px;
     text-align: center;
 }
-
-/* @media (min-width: 500px) {
-    .Image {
-        width: 450px;
-    }
-} */

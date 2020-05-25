@@ -1,11 +1,10 @@
 import React from 'react';
-import classes from './Image.module.css'
 
 const Image = props => {
     return (
-        <picture className={classes.Image}>
+        <picture className={props.className} onClick={() => props.clicked()}>
             <img src={props.url} />
-            <p>{props.title}!</p>
+            <p>{props.title}</p>
         </picture>
     );
 }

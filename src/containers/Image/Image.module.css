@@ -1,6 +1,6 @@
 .Image {
     display: block;
-    width: 250px;
+    width: 100%;
     margin: 16px auto;
     padding: 16px;
     text-align: center;
@@ -9,6 +9,6 @@
 
 @media (min-width: 500px) {
     .Image {
-        width: 450px;
+        width: 100%;
     }
 }

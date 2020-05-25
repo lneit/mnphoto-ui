@@ -1,7 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import './index.css';
-import App from './containers/App';
+import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
 import Amplify, { API, Auth } from 'aws-amplify';
 import awsConfig from './awsConfig';
@@ -35,10 +36,16 @@ Amplify.configure({
   }
 });
 
-ReactDOM.render(
+const app = (
   <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </React.StrictMode>
+);
+
+ReactDOM.render(
+  app,
   document.getElementById('root')
 );
 
