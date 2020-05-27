@@ -1,47 +1,56 @@
 import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
+import Loader from 'react-loader-spinner';
 import NavigationItem from './NavigationItem/NavigationItem';
 import classes from './NavigationItems.module.css';
-import { API } from 'aws-amplify';
-import Spinner from '../../UI/Spinner/Spinner';
+import * as actionCreators from '../../../store/actions/index';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
-const NavigationItems = () => {
-    const [albumData, setAlbumData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
-    const getAlbumData = async () => {
-        try {
-            const apiResponse = await API.get("albums" , "/albums");
-            setAlbumData(apiResponse);
-            setLoading(false);
-        } catch (e) {
-            console.error('Exception fetching album data: ', e.message);
-            setError(e.message);
-            setLoading(false);
-         }
-    }
-
+const NavigationItems = ({
+    fetchAlbums,
+    albumData,
+    loading
+}) => {
     useEffect(() => {
-        getAlbumData();
+        fetchAlbums();
     }, []);
 
-    let albums = albumData.map((album, index) => (
-        <NavigationItem 
-            key={index} 
-            link="/" active>{album.title}
-        </NavigationItem>
-    ));
+    const spinner = (<Loader
+        type="ThreeDots"
+        color="#aa9ebd"
+        height={10}
+        width={100}
+        timeout={30000} //30 secs
+    />);
 
-    if (loading) {
-        albums = <Spinner />;
+    let albums = spinner;
+    if (!loading) {
+        albums = albumData.map((album, index) => (
+            <NavigationItem 
+                key={index} 
+                link={"/album/" + encodeURIComponent(album.title)}>{album.title}
+            </NavigationItem>
+        ));
     }
 
     return (
         <ul className={classes.NavigationItems}>
-            {!error && albums}
-            {error && <p>Albums couldn't be loaded</p>}
-            <NavigationItem link="/">Contact</NavigationItem>
+            {albums}
+            <NavigationItem link={"/contact"}>Contact</NavigationItem>
         </ul>
 )};
 
-export default NavigationItems;
+const mapStateToProps = state => {
+    return {
+        albumData: state.albums.data,
+        loading: state.albums.loading
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchAlbums: () => dispatch(actionCreators.fetchAlbums())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavigationItems);

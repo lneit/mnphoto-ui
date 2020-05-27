@@ -1,28 +1,20 @@
 import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
 import Image from '../../components/Images/Image';
 import Spinner from '../../components/UI/Spinner/Spinner';
 import axios from '../../axiosImages';
 import withErrorHandler from '../../hoc/withErrorHandler/withErrorHandler';
 import classes from './Thumbnails.module.css';
+import * as actionCreators from '../../store/actions';
 
-const Thumbnails = props => {
-    console.log(props);
-
-    const [imageData, setImageData] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
-
+const Thumbnails = ({
+    fetchImages,
+    imageData,
+    loading,
+    ...props
+}) => {
     useEffect(() => {
-        axios.get('/photos')
-            .then(response => {
-                setImageData(response.data.slice(0, 7));
-                setLoading(false);
-            })
-            .catch(error => {
-                console.log('Error fetching data: ', error);
-                setLoading(false);
-                setError(true);
-            });
+        fetchImages();
     }, []);
 
     const thumbSelectedHandler = (index) => {
@@ -41,27 +33,38 @@ const Thumbnails = props => {
         });
     };
 
-    let thumbnails = imageData.map((img, index) => (
-        <Image
-            key={img.id}
-            title={img.title} 
-            url={img.thumbnailUrl} 
-            albumId={img.albumId}
-            clicked={() => thumbSelectedHandler(index)}
-            className={classes.Thumbnail}
-        />
-    ));
-
-    if (loading) {
-        thumbnails = <Spinner />;
+    let thumbnails = <Spinner />;
+    if (!loading) {
+        thumbnails = imageData.map((img, index) => (
+            <Image
+                key={img.id}
+                title={img.title} 
+                url={img.thumbnailUrl} 
+                albumId={img.albumId}
+                clicked={() => thumbSelectedHandler(index)}
+                className={classes.Thumbnail}
+            />
+        ));
     }
 
     return (
         <section className={classes.Thumbnails}>
-            {!!!error && thumbnails}
-            {error && <p>Images couldn't be loaded</p>}
+            {thumbnails}
         </section>
     );
 }
 
-export default withErrorHandler(Thumbnails, axios);
+const mapStateToProps = state => {
+    return {
+        imageData: state.images.data,
+        loading: state.images.loading
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchImages: () => dispatch(actionCreators.fetchImages())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(withErrorHandler(Thumbnails, axios));

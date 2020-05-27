@@ -1,11 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import thunk from 'redux-thunk';
+import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
-import './index.css';
 import App from './containers/App/App';
 import * as serviceWorker from './serviceWorker';
 import Amplify, { API, Auth } from 'aws-amplify';
 import awsConfig from './awsConfig';
+import albumReducer from './store/reducers/albums';
+import imageReducer from './store/reducers/images';
+import './index.css';
 
 Amplify.configure({
   Auth: {
@@ -36,10 +41,29 @@ Amplify.configure({
   }
 });
 
+const rootReducer = combineReducers({
+  albums: albumReducer,
+  images: imageReducer
+});
+
+const logger = store => {
+  return next => {
+    return action => {
+        console.log('[Middleware] Dispatching', action);
+        const result = next(action);
+        console.log('[Middleware] next state', store.getState());
+        return result;
+    }
+  }
+}
+
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const store = createStore(rootReducer, composeEnhancers(applyMiddleware(logger, thunk)));
+
 const app = (
   <React.StrictMode>
     <BrowserRouter>
-      <App />
+      <Provider store={store}><App /></Provider>
     </BrowserRouter>
   </React.StrictMode>
 );

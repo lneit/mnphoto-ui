@@ -1,28 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import Image from '../../components/Images/Image';
-import classes from './Image.module.css';
 
 const ImageContainer = (props) => {
-    const [id, setId] = useState(null);
-    const [albumId, setAlbumId] = useState(null);
-    const [url, setUrl] = useState(null);
-    const [title, setTitle] = useState(null);
+    const [albumAttributes, setAlbumAttributes] = useState({});
 
     useEffect(() => {
         const query = new URLSearchParams(props.location.search);
+        const attrs = {} 
 
         for (let param of query.entries()) {
-            console.log(param);
-            if (param[0] === 'url') {
-                setUrl(param[1]);
-            } else if (param[0] === 'title') {
-                setTitle(param[1])
-            } else if (param[0] === 'id') {
-                setId(param[1])
-            } else if (param[0] === 'albumId') {
-                setAlbumId(param[1])
-            }
+            attrs[param[0]] = param[1];
         }
+        setAlbumAttributes(attrs);
     }, []);
 
     const imageClickedHandler = () => {
@@ -33,11 +22,7 @@ const ImageContainer = (props) => {
         <section>
             <Image
                 clicked={imageClickedHandler}
-                id={id} 
-                title={title} 
-                url={url} 
-                albumId={albumId}
-                className={classes.Image}
+                {...albumAttributes}
             />
         </section>
     )};
